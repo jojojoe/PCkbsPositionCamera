@@ -1,0 +1,7 @@
+PCkbsPositionCam.xcodeproj/xcuserdata/
+PCkbsPositionCam.xcworkspace/
+Pods/
+*.swp
+Podfile.lock
+.DS_Store
+PCkbsPositionCam.xcodeproj/project.xcworkspace/xcuserdata/
