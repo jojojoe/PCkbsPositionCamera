@@ -22,6 +22,7 @@
 		EB3AE60627B3A24B007A896A /* PCkSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3AE60527B3A24B007A896A /* PCkSettingVC.swift */; };
 		EB3AE60827B3A5BB007A896A /* PCsCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3AE60727B3A5BB007A896A /* PCsCameraVC.swift */; };
 		EB3AE60B27B3C5C4007A896A /* PCpDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3AE60A27B3C5C4007A896A /* PCpDataManager.swift */; };
+		EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		EB3AE60527B3A24B007A896A /* PCkSettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkSettingVC.swift; sourceTree = "<group>"; };
 		EB3AE60727B3A5BB007A896A /* PCsCameraVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsCameraVC.swift; sourceTree = "<group>"; };
 		EB3AE60A27B3C5C4007A896A /* PCpDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCpDataManager.swift; sourceTree = "<group>"; };
+		EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkOverlayerImgView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				EB3AE60727B3A5BB007A896A /* PCsCameraVC.swift */,
+				EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -268,6 +271,7 @@
 				EB3AE60427B39A34007A896A /* PCkEvenM.swift in Sources */,
 				EB3AE60027B399A9007A896A /* PCkPurchaseM.swift in Sources */,
 				948FD17B27B3932800D3156C /* ViewController.swift in Sources */,
+				EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */,
 				948FD17727B3932800D3156C /* AppDelegate.swift in Sources */,
 				948FD17927B3932800D3156C /* SceneDelegate.swift in Sources */,
 				EB3AE60627B3A24B007A896A /* PCkSettingVC.swift in Sources */,
@@ -421,6 +425,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1.0.0.0;
+				DEVELOPMENT_TEAM = 598UKLP25U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PCkbsPositionCam/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -444,6 +449,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1.0.0.0;
+				DEVELOPMENT_TEAM = 598UKLP25U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PCkbsPositionCam/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

@@ -30,6 +30,8 @@ class PCsCameraVC: UIViewController {
     var backBtn = UIButton()
     var takePhotoBtn = UIButton()
     var camPositionBtn = UIButton()
+    var overlayerImgViews: [PCkOverlayerImgView] = []
+    var overlayerLines: [UIView] = []
 //    let filterBar = PSkMagicCamFilterBar()
 //    let vipProBar = UIView()
     
@@ -42,7 +44,14 @@ class PCsCameraVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupOverlayerLayout()
+        setupLayoutLine()
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+            [weak self] in
+            guard let `self` = self else {return}
+            self.setupOverlayerLayout()
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -73,7 +82,7 @@ class PCsCameraVC: UIViewController {
             topOffset = 50
         }
         let width: CGFloat = UIScreen.main.bounds.width - (leftOffset * 2)
-        let height: CGFloat = width
+        let height: CGFloat = width / (3/4)
         
         metalView = BBMetalView(frame: CGRect(x: leftOffset, y: topOffset, width: width, height: height))
         metalView.adhere(toSuperview: view)
@@ -125,7 +134,7 @@ class PCsCameraVC: UIViewController {
         bottomBar.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-            $0.height.equalTo(100)
+            $0.height.equalTo(150)
         }
         
         //
@@ -173,14 +182,53 @@ class PCsCameraVC: UIViewController {
         
     }
 
+}
+
+extension PCsCameraVC {
+    func setupLayoutLine() {
+        
+    }
+    
     func setupOverlayerLayout() {
         if layoutType == 0 {
             
+            
             let imgV1 = UIImageView()
             imgV1.image("")
-                .backgroundColor(.blue)
+                .backgroundColor(UIColor.blue.withAlphaComponent(0.2))
             imgV1.adhere(toSuperview: view)
-            imgV1.frame = CGRect(x: 0, y: 0, width: metalView.bounds.width / 2, height: metalView.bounds.height / 2)
+            imgV1.frame = CGRect(x: metalView.frame.origin.x, y: metalView.frame.origin.y, width: metalView.bounds.width / 2, height: metalView.bounds.height / 2)
+            //
+            let imgV2 = UIImageView()
+            imgV2.image("")
+                .backgroundColor(UIColor.blue.withAlphaComponent(0.2))
+            imgV2.adhere(toSuperview: view)
+            imgV2.frame = CGRect(x: metalView.frame.origin.x + metalView.bounds.width / 2, y: metalView.frame.origin.y, width: metalView.bounds.width / 2, height: metalView.bounds.height / 2)
+            //
+            let imgV3 = UIImageView()
+            imgV3.image("")
+                .backgroundColor(UIColor.blue.withAlphaComponent(0.2))
+            imgV3.adhere(toSuperview: view)
+            imgV3.frame = CGRect(x: metalView.frame.origin.x, y: metalView.frame.origin.y + metalView.bounds.height / 2, width: metalView.bounds.width / 2, height: metalView.bounds.height / 2)
+            //
+            let imgV4 = UIImageView()
+            imgV4.image("")
+                .backgroundColor(UIColor.blue.withAlphaComponent(0.2))
+            imgV4.adhere(toSuperview: view)
+            imgV4.frame = CGRect(x: metalView.frame.origin.x + metalView.bounds.width / 2, y: metalView.frame.origin.y + metalView.bounds.height / 2, width: metalView.bounds.width / 2, height: metalView.bounds.height / 2)
+            //
+            let line1 = UIView()
+            line1.backgroundColor(.lightGray)
+                .adhere(toSuperview: view)
+            line1.frame = CGRect(x: imgV1.frame.maxX - 1/2, y: imgV1.frame.minY, width: 1, height: metalView.bounds.height)
+            //
+            let line2 = UIView()
+            line2.backgroundColor(.lightGray)
+                .adhere(toSuperview: view)
+            line2.frame = CGRect(x: imgV1.frame.minX, y: imgV1.frame.maxY - 1/2, width: metalView.bounds.width, height: 1)
+            
+            overlayerImgViews = [imgV1, imgV2, imgV3, imgV4]
+            overlayerLines = [line1, line2]
             
         } else {
             
