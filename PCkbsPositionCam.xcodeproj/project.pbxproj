@@ -22,7 +22,22 @@
 		EB3AE60627B3A24B007A896A /* PCkSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3AE60527B3A24B007A896A /* PCkSettingVC.swift */; };
 		EB3AE60827B3A5BB007A896A /* PCsCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3AE60727B3A5BB007A896A /* PCsCameraVC.swift */; };
 		EB3AE60B27B3C5C4007A896A /* PCpDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3AE60A27B3C5C4007A896A /* PCpDataManager.swift */; };
+		EB9AFAAA27B9FA6F00ABAB6D /* PCkFilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9AFAA927B9FA6F00ABAB6D /* PCkFilterBar.swift */; };
+		EB9AFAAC27BA011200ABAB6D /* PCkLayoutPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9AFAAB27BA011200ABAB6D /* PCkLayoutPopView.swift */; };
+		EB9AFAAE27BA083B00ABAB6D /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAAD27BA083B00ABAB6D /* layout.json */; };
+		EB9AFABA27BA263E00ABAB6D /* lut10.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB027BA263D00ABAB6D /* lut10.png */; };
+		EB9AFABB27BA263E00ABAB6D /* lut_mianhuatang.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB127BA263D00ABAB6D /* lut_mianhuatang.png */; };
+		EB9AFABC27BA263E00ABAB6D /* lut_mangu.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB227BA263D00ABAB6D /* lut_mangu.png */; };
+		EB9AFABD27BA263E00ABAB6D /* lut3.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB327BA263D00ABAB6D /* lut3.png */; };
+		EB9AFABE27BA263E00ABAB6D /* lut15.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB427BA263D00ABAB6D /* lut15.png */; };
+		EB9AFABF27BA263E00ABAB6D /* lut_tengman.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB527BA263E00ABAB6D /* lut_tengman.png */; };
+		EB9AFAC027BA263E00ABAB6D /* lut7.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB627BA263E00ABAB6D /* lut7.png */; };
+		EB9AFAC127BA263E00ABAB6D /* lookup_002.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB727BA263E00ABAB6D /* lookup_002.png */; };
+		EB9AFAC227BA263E00ABAB6D /* lut_riguang.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB827BA263E00ABAB6D /* lut_riguang.png */; };
+		EB9AFAC327BA263E00ABAB6D /* lookup1.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9AFAB927BA263E00ABAB6D /* lookup1.png */; };
 		EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */; };
+		EBCF724127BA524200F3E019 /* PCkSavePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCF724027BA524200F3E019 /* PCkSavePopView.swift */; };
+		EBF4F15527BE3EA700402AFC /* PCsGifMakerCamVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +60,22 @@
 		EB3AE60527B3A24B007A896A /* PCkSettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkSettingVC.swift; sourceTree = "<group>"; };
 		EB3AE60727B3A5BB007A896A /* PCsCameraVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsCameraVC.swift; sourceTree = "<group>"; };
 		EB3AE60A27B3C5C4007A896A /* PCpDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCpDataManager.swift; sourceTree = "<group>"; };
+		EB9AFAA927B9FA6F00ABAB6D /* PCkFilterBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkFilterBar.swift; sourceTree = "<group>"; };
+		EB9AFAAB27BA011200ABAB6D /* PCkLayoutPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkLayoutPopView.swift; sourceTree = "<group>"; };
+		EB9AFAAD27BA083B00ABAB6D /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
+		EB9AFAB027BA263D00ABAB6D /* lut10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut10.png; sourceTree = "<group>"; };
+		EB9AFAB127BA263D00ABAB6D /* lut_mianhuatang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut_mianhuatang.png; sourceTree = "<group>"; };
+		EB9AFAB227BA263D00ABAB6D /* lut_mangu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut_mangu.png; sourceTree = "<group>"; };
+		EB9AFAB327BA263D00ABAB6D /* lut3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut3.png; sourceTree = "<group>"; };
+		EB9AFAB427BA263D00ABAB6D /* lut15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut15.png; sourceTree = "<group>"; };
+		EB9AFAB527BA263E00ABAB6D /* lut_tengman.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut_tengman.png; sourceTree = "<group>"; };
+		EB9AFAB627BA263E00ABAB6D /* lut7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut7.png; sourceTree = "<group>"; };
+		EB9AFAB727BA263E00ABAB6D /* lookup_002.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_002.png; sourceTree = "<group>"; };
+		EB9AFAB827BA263E00ABAB6D /* lut_riguang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lut_riguang.png; sourceTree = "<group>"; };
+		EB9AFAB927BA263E00ABAB6D /* lookup1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup1.png; sourceTree = "<group>"; };
 		EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkOverlayerImgView.swift; sourceTree = "<group>"; };
+		EBCF724027BA524200F3E019 /* PCkSavePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkSavePopView.swift; sourceTree = "<group>"; };
+		EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifMakerCamVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				EB3AE5FC27B39898007A896A /* ToolExtension */,
+				EBF4F15327BE3E7800402AFC /* GifMaker */,
 				EB3AE60927B3A5C2007A896A /* Camera */,
 				EB3AE5F927B3960F007A896A /* Main */,
 				EB3AE5F827B39603007A896A /* RootGroup */,
@@ -116,6 +147,7 @@
 				948FD17F27B3932900D3156C /* Assets.xcassets */,
 				948FD18127B3932900D3156C /* LaunchScreen.storyboard */,
 				948FD18427B3932900D3156C /* Info.plist */,
+				EB9AFAAF27BA263300ABAB6D /* LUT */,
 			);
 			name = RootGroup;
 			sourceTree = "<group>";
@@ -137,6 +169,7 @@
 				EB3AE60127B39A10007A896A /* SubscribeProtocal.swift */,
 				EB3AE60327B39A34007A896A /* PCkEvenM.swift */,
 				EB3AE60A27B3C5C4007A896A /* PCpDataManager.swift */,
+				EB9AFAAD27BA083B00ABAB6D /* layout.json */,
 			);
 			path = ToolExtension;
 			sourceTree = "<group>";
@@ -146,8 +179,36 @@
 			children = (
 				EB3AE60727B3A5BB007A896A /* PCsCameraVC.swift */,
 				EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */,
+				EB9AFAA927B9FA6F00ABAB6D /* PCkFilterBar.swift */,
+				EB9AFAAB27BA011200ABAB6D /* PCkLayoutPopView.swift */,
+				EBCF724027BA524200F3E019 /* PCkSavePopView.swift */,
 			);
 			path = Camera;
+			sourceTree = "<group>";
+		};
+		EB9AFAAF27BA263300ABAB6D /* LUT */ = {
+			isa = PBXGroup;
+			children = (
+				EB9AFAB727BA263E00ABAB6D /* lookup_002.png */,
+				EB9AFAB927BA263E00ABAB6D /* lookup1.png */,
+				EB9AFAB227BA263D00ABAB6D /* lut_mangu.png */,
+				EB9AFAB127BA263D00ABAB6D /* lut_mianhuatang.png */,
+				EB9AFAB827BA263E00ABAB6D /* lut_riguang.png */,
+				EB9AFAB527BA263E00ABAB6D /* lut_tengman.png */,
+				EB9AFAB327BA263D00ABAB6D /* lut3.png */,
+				EB9AFAB627BA263E00ABAB6D /* lut7.png */,
+				EB9AFAB027BA263D00ABAB6D /* lut10.png */,
+				EB9AFAB427BA263D00ABAB6D /* lut15.png */,
+			);
+			name = LUT;
+			sourceTree = "<group>";
+		};
+		EBF4F15327BE3E7800402AFC /* GifMaker */ = {
+			isa = PBXGroup;
+			children = (
+				EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */,
+			);
+			path = GifMaker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -209,7 +270,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB9AFAC127BA263E00ABAB6D /* lookup_002.png in Resources */,
+				EB9AFAC327BA263E00ABAB6D /* lookup1.png in Resources */,
+				EB9AFABA27BA263E00ABAB6D /* lut10.png in Resources */,
+				EB9AFABB27BA263E00ABAB6D /* lut_mianhuatang.png in Resources */,
+				EB9AFABF27BA263E00ABAB6D /* lut_tengman.png in Resources */,
+				EB9AFABC27BA263E00ABAB6D /* lut_mangu.png in Resources */,
+				EB9AFABD27BA263E00ABAB6D /* lut3.png in Resources */,
+				EB9AFAC227BA263E00ABAB6D /* lut_riguang.png in Resources */,
+				EB9AFABE27BA263E00ABAB6D /* lut15.png in Resources */,
 				948FD18327B3932900D3156C /* LaunchScreen.storyboard in Resources */,
+				EB9AFAAE27BA083B00ABAB6D /* layout.json in Resources */,
+				EB9AFAC027BA263E00ABAB6D /* lut7.png in Resources */,
 				948FD18027B3932900D3156C /* Assets.xcassets in Resources */,
 				948FD17E27B3932800D3156C /* Main.storyboard in Resources */,
 			);
@@ -268,14 +340,18 @@
 				EB3AE5FE27B3997E007A896A /* Extension.swift in Sources */,
 				EB3AE60227B39A10007A896A /* SubscribeProtocal.swift in Sources */,
 				EB3AE60827B3A5BB007A896A /* PCsCameraVC.swift in Sources */,
+				EB9AFAAA27B9FA6F00ABAB6D /* PCkFilterBar.swift in Sources */,
 				EB3AE60427B39A34007A896A /* PCkEvenM.swift in Sources */,
 				EB3AE60027B399A9007A896A /* PCkPurchaseM.swift in Sources */,
+				EBF4F15527BE3EA700402AFC /* PCsGifMakerCamVC.swift in Sources */,
 				948FD17B27B3932800D3156C /* ViewController.swift in Sources */,
 				EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */,
+				EBCF724127BA524200F3E019 /* PCkSavePopView.swift in Sources */,
 				948FD17727B3932800D3156C /* AppDelegate.swift in Sources */,
 				948FD17927B3932800D3156C /* SceneDelegate.swift in Sources */,
 				EB3AE60627B3A24B007A896A /* PCkSettingVC.swift in Sources */,
 				EB3AE5FB27B39632007A896A /* PCpMainVC.swift in Sources */,
+				EB9AFAAC27BA011200ABAB6D /* PCkLayoutPopView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

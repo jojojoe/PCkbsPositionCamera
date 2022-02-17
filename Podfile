@@ -18,5 +18,8 @@ target 'PCkbsPositionCam' do
   pod 'GPUImage'
   pod 'ShimmerSwift'
   pod 'AppsFlyerFramework'
-
+  pod 'SRCountdownTimer'
+  
+  pod 'LookinServer', :configurations => ['Debug']
+  
 end

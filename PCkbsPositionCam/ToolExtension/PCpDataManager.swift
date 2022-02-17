@@ -9,6 +9,145 @@ import Foundation
 import BBMetalImage
 import UIKit
 
+struct PCpLayoutItem: Codable {
+    var layout: String
+    var thumb: String
+}
+
+class PCpDataManager {
+    static let `default` = PCpDataManager()
+    var filterList: [CamFilterItem] = []
+    var layoutTypeList: [PCpLayoutItem] {
+        return PCpDataManager.default.loadJson([PCpLayoutItem].self, name: "layout") ?? []
+    }
+    init() {
+        loadFilter()
+    }
+    
+    func loadFilter() {
+        
+        let beauty = CamFilterItem(filterType: .beauty)
+        let rgba1 = CamFilterItem(filterType: .rgba1)
+        let rgba2 = CamFilterItem(filterType: .rgba2)
+        let rgba3 = CamFilterItem(filterType: .rgba3)
+        let rgba4 = CamFilterItem(filterType: .rgba4)
+        let rgba5 = CamFilterItem(filterType: .rgba5)
+        let hue1 = CamFilterItem(filterType: .hue1)
+        let hue2 = CamFilterItem(filterType: .hue2)
+        let hue3 = CamFilterItem(filterType: .hue3)
+        let hue4 = CamFilterItem(filterType: .hue4)
+        let vibrance = CamFilterItem(filterType: .vibrance)
+        let highlightShadowTint = CamFilterItem(filterType: .highlightShadowTint)
+        let lookup1 = CamFilterItem(filterType: .lookup1)
+        let lookup2 = CamFilterItem(filterType: .lookup2)
+        let lookup3 = CamFilterItem(filterType: .lookup3)
+        let lookup4 = CamFilterItem(filterType: .lookup4)
+        let lookup5 = CamFilterItem(filterType: .lookup5)
+        let lookup6 = CamFilterItem(filterType: .lookup6)
+        let lookup7 = CamFilterItem(filterType: .lookup7)
+        let lookup8 = CamFilterItem(filterType: .lookup8)
+        let lookup9 = CamFilterItem(filterType: .lookup9)
+        let lookup10 = CamFilterItem(filterType: .lookup10)
+        let monochrome1 = CamFilterItem(filterType: .monochrome1)
+        let monochrome2 = CamFilterItem(filterType: .monochrome2)
+        let monochrome3 = CamFilterItem(filterType: .monochrome3)
+        let monochrome4 = CamFilterItem(filterType: .monochrome4)
+        let monochrome5 = CamFilterItem(filterType: .monochrome5)
+        let zoomBlur = CamFilterItem(filterType: .zoomBlur)
+        let tiltShift = CamFilterItem(filterType: .tiltShift)
+        let pixellate = CamFilterItem(filterType: .pixellate)
+        let polkaDot = CamFilterItem(filterType: .polkaDot)
+        let halftone = CamFilterItem(filterType: .halftone)
+        let crosshatch = CamFilterItem(filterType: .crosshatch)
+        let sketch = CamFilterItem(filterType: .sketch)
+        let vignette = CamFilterItem(filterType: .vignette)
+        let kuwahara = CamFilterItem(filterType: .kuwahara)
+        let swirl = CamFilterItem(filterType: .swirl)
+        let bulge = CamFilterItem(filterType: .bulge)
+        let pinch = CamFilterItem(filterType: .pinch)
+        let sobelEdgeDetection = CamFilterItem(filterType: .sobelEdgeDetection)
+          
+        
+        //
+        filterList = [beauty,
+                         zoomBlur,
+                         tiltShift,
+                         pixellate,
+                         polkaDot,
+                         halftone,
+                         crosshatch,
+                         sketch,
+                         vignette,
+                         kuwahara,
+                         sobelEdgeDetection,
+                         swirl,
+                         bulge,
+                         pinch,
+                         rgba1,
+                         rgba2,
+                         rgba3,
+                         rgba4,
+                         rgba5,
+                         hue1,
+                         hue2,
+                         hue3,
+                         hue4,
+                         vibrance,
+                         highlightShadowTint,
+                         lookup1,
+                         lookup2,
+                         lookup3,
+                         lookup4,
+                         lookup5,
+                         lookup6,
+                         lookup7,
+                         lookup8,
+                         lookup9,
+                         lookup10,
+                         monochrome1,
+                         monochrome2,
+                         monochrome3,
+                         monochrome4,
+                         monochrome5]
+    }
+}
+
+
+extension PCpDataManager {
+    func loadJson<T: Codable>(_: T.Type, name: String, type: String = "json") -> T? {
+        if let path = Bundle.main.path(forResource: name, ofType: type) {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path))
+                return try! JSONDecoder().decode(T.self, from: data)
+            } catch let error as NSError {
+                debugPrint(error)
+            }
+        }
+        return nil
+    }
+    
+    func loadJson<T: Codable>(_:T.Type, path:String) -> T? {
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            do {
+                return try PropertyListDecoder().decode(T.self, from: data)
+            } catch let error as NSError {
+                print(error)
+            }
+        } catch let error as NSError {
+            print(error)
+        }
+        return nil
+    }
+    
+    func loadPlist<T: Codable>(_:T.Type, name:String, type:String = "plist") -> T? {
+        if let path = Bundle.main.path(forResource: name, ofType: type) {
+            return loadJson(T.self, path: path)
+        }
+        return nil
+    }
+    
+}
 
 class CamFilterItem: NSObject {
     var filterType: FilterType
