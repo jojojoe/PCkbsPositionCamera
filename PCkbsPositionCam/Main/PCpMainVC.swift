@@ -38,6 +38,15 @@ extension PCpMainVC {
         type1CamBtn.addTarget(self, action: #selector(type1CamBtnClick(sender: )), for: .touchUpInside)
         
         
+        let type2CamBtn = UIButton()
+        type2CamBtn.adhere(toSuperview: view)
+            .backgroundColor(.yellow)
+        type2CamBtn.snp.makeConstraints {
+            $0.centerY.equalToSuperview().offset(140)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(100)
+        }
+        type2CamBtn.addTarget(self, action: #selector(type2CamBtnClick(sender: )), for: .touchUpInside)
         
         
     }
@@ -48,7 +57,10 @@ extension PCpMainVC {
         self.navigationController?.pushViewController(type1Cam, animated: true)
     }
     
-    
+    @objc func type2CamBtnClick(sender: UIButton) {
+        let type1Cam = PCsGifMakerCamVC()
+        self.navigationController?.pushViewController(type1Cam, animated: true)
+    }
     
 }
 

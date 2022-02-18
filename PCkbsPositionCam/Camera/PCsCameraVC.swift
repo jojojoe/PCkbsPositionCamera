@@ -18,7 +18,7 @@ class PCsCameraVC: UIViewController {
     private var camera: BBMetalCamera!
     private var metalView: BBMetalView!
     var canvasBgV: UIView = UIView()
- 
+    let topContentBgV = UIView()
     
     var backBtn = UIButton()
     var takePhotoBtn = UIButton()
@@ -26,7 +26,7 @@ class PCsCameraVC: UIViewController {
     var overlayerImgViews: [PCkOverlayerImgView] = []
     var overlayerLines: [UIView] = []
     let filterBar = PCkFilterBar()
-//    let vipProBar = UIView()
+
     let layoutTypeBar = PCkLayoutPopView()
     var currentLayoutTypeItem:  PCpLayoutItem?
     var currentTakingOverImgV: PCkOverlayerImgView?
@@ -35,6 +35,9 @@ class PCsCameraVC: UIViewController {
     let savePopupView = PCkSavePopView()
     
     var currentApplyingFilterItem: CamFilterItem?
+    var didLayoutOnce: Once = Once()
+    
+    var isReadyCamera: Bool = false
     
     
     override func viewDidLoad() {
@@ -56,11 +59,18 @@ class PCsCameraVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        camera.start()
+        if isReadyCamera == true {
+            camera.start()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
         
     }
     
@@ -69,53 +79,58 @@ class PCsCameraVC: UIViewController {
         camera.stop()
         
     }
+  
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        didLayoutOnce.run {
+            //
+            var topOffset: CGFloat = 0
+            var leftOffset: CGFloat = 0
+            
+            let topContentBgVWidth: CGFloat = self.topContentBgV.width
+            let topContentBgVHeight: CGFloat = self.topContentBgV.height
+            
+            let topWH = topContentBgVWidth / topContentBgVHeight
+            let cameraWH: CGFloat = 3/4
+            var cameraWidth: CGFloat = 1
+            var cameraHeight: CGFloat = 1
+            if topWH > cameraWH {
+                cameraWidth = topContentBgVHeight * cameraWH
+                cameraHeight = topContentBgVHeight
+                topOffset = 0
+                leftOffset = (topContentBgVWidth - cameraWidth) / 2
+            } else {
+                cameraWidth = topContentBgVWidth
+                cameraHeight = topContentBgVWidth / cameraWH
+                topOffset = (topContentBgVHeight - cameraHeight) / 2
+                leftOffset = 0
+            }
+            
+            //
+            canvasBgV.adhere(toSuperview: view)
+            canvasBgV.frame = CGRect(x: leftOffset, y: topOffset, width: cameraWidth, height: cameraHeight)
+            
+            //
+            metalView = BBMetalView(frame: CGRect(x: 0, y: 0, width: cameraWidth, height: cameraHeight))
+            metalView.adhere(toSuperview: canvasBgV)
+            metalView.backgroundColor(.clear)
+            //
+            camera = BBMetalCamera(sessionPreset: .hd1920x1080)
+            camera.add(consumer: metalView)
+            /*
+             hd4K3840x2160
+             let topOffsety: Float = ((3840 - 2160) / 2) / 3840
+             let heightP: Float = 2160 / 3840
+             */
+            camera.start()
+            isReadyCamera = true
+            
+        }
+    }
     
     func setupView() {
         //
         view.backgroundColor(UIColor(hexString: "F4F4F4")!)
-        
-        //
-        var topOffset: CGFloat = 80
-        var leftOffset: CGFloat = 0
-        if Device.current.diagonal <= 4.7 || Device.current.diagonal >= 7.0 {
-            leftOffset = 30
-            topOffset = 50
-        }
-        let width: CGFloat = UIScreen.main.bounds.width - (leftOffset * 2)
-        let height: CGFloat = width / (3/4)
-        
-        //
-        canvasBgV.adhere(toSuperview: view)
-        canvasBgV.frame = CGRect(x: leftOffset, y: topOffset, width: width, height: height)
-        
-        //
-        metalView = BBMetalView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-        metalView.adhere(toSuperview: canvasBgV)
-        metalView.backgroundColor(.clear)
-        //
-        camera = BBMetalCamera(sessionPreset: .hd1920x1080)
-        camera.add(consumer: metalView)
-        /*
-         hd4K3840x2160
-         let topOffsety: Float = ((3840 - 2160) / 2) / 3840
-         let heightP: Float = 2160 / 3840
-         */
-        
-        
-        //
-        
-//        vipProBar
-//            .backgroundColor(.darkGray)
-//            .adhere(toSuperview: view)
-//        vipProBar.layer.cornerRadius = 10
-//        vipProBar.layer.masksToBounds = true
-//        vipProBar.snp.makeConstraints {
-//            $0.centerX.equalToSuperview()
-//            $0.bottom.equalTo(filterBar.snp.top).offset(-20)
-//            $0.height.equalTo(60)
-//            $0.width.equalTo(UIScreen.main.bounds.width - 80)
-//        }
-        
         //
         let bottomBar = UIView()
         bottomBar
@@ -126,6 +141,26 @@ class PCsCameraVC: UIViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             $0.height.equalTo(120)
         }
+        //
+        let toolBgV = UIView()
+        toolBgV.backgroundColor(.white)
+            .adhere(toSuperview: view)
+        toolBgV.snp.makeConstraints {
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalTo(bottomBar.snp.top).offset(0)
+            $0.height.equalTo(70)
+        }
+        //
+        
+        topContentBgV.backgroundColor(.white)
+            .adhere(toSuperview: view)
+        topContentBgV.snp.makeConstraints {
+            $0.left.right.equalToSuperview()
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(0)
+            $0.bottom.equalTo(toolBgV.snp.top)
+        }
+        
+        
         
         //
         takePhotoBtn
@@ -170,22 +205,14 @@ class PCsCameraVC: UIViewController {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
      
-        //
-        let toolBgV = UIView()
-        toolBgV.backgroundColor(.white)
-            .adhere(toSuperview: view)
-        toolBgV.snp.makeConstraints {
-            $0.left.right.equalToSuperview()
-            $0.bottom.equalTo(bottomBar.snp.top).offset(0)
-            $0.height.equalTo(60)
-        }
+        
         //
         filterBar.backgroundColor(.white)
         filterBar.adhere(toSuperview: toolBgV)
         filterBar.snp.makeConstraints {
             $0.right.equalToSuperview()
             $0.bottom.equalTo(bottomBar.snp.top).offset(0)
-            $0.height.equalTo(60)
+            $0.height.equalTo(70)
             $0.left.equalToSuperview().offset(80)
         }
         filterBar.camFilterBarClickBlock = {

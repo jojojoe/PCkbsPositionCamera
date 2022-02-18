@@ -67,7 +67,7 @@ class PCkLayoutPopView: UIView {
         contentV.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.top.equalTo(self.safeAreaLayoutGuide.snp.bottom).offset(-200)
+            $0.top.equalTo(self.safeAreaLayoutGuide.snp.bottom).offset(-190)
         }
         
         //

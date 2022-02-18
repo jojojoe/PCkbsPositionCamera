@@ -14,12 +14,27 @@ struct PCpLayoutItem: Codable {
     var thumb: String
 }
 
+struct PCsCamSizeScaleItem: Codable {
+    var thumb: String = ""
+    var width: CGFloat = 1080
+    var height: CGFloat = 1920
+}
+
+
 class PCpDataManager {
     static let `default` = PCpDataManager()
     var filterList: [CamFilterItem] = []
     var layoutTypeList: [PCpLayoutItem] {
         return PCpDataManager.default.loadJson([PCpLayoutItem].self, name: "layout") ?? []
     }
+    
+    var camSizeScaleTypeList: [PCsCamSizeScaleItem] {
+        
+        return PCpDataManager.default.loadJson([PCsCamSizeScaleItem].self, name: "sizeScale") ?? []
+    }
+    
+    
+    
     init() {
         loadFilter()
     }

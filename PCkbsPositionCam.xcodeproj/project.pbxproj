@@ -38,6 +38,11 @@
 		EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */; };
 		EBCF724127BA524200F3E019 /* PCkSavePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCF724027BA524200F3E019 /* PCkSavePopView.swift */; };
 		EBF4F15527BE3EA700402AFC /* PCsGifMakerCamVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */; };
+		EBF4F15727BF37CE00402AFC /* PCsGifConfigBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15627BF37CE00402AFC /* PCsGifConfigBar.swift */; };
+		EBF4F15927BF3B3A00402AFC /* sizeScale.json in Resources */ = {isa = PBXBuildFile; fileRef = EBF4F15827BF3B3A00402AFC /* sizeScale.json */; };
+		EBF4F15B27BF416A00402AFC /* PCsGifContinePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15A27BF416A00402AFC /* PCsGifContinePreview.swift */; };
+		EBF4F15F27BF8AC100402AFC /* PCsGifSaveConvertVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */; };
+		EBF4F16127BFA3E800402AFC /* PCsGifSaveAnimationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F16027BFA3E800402AFC /* PCsGifSaveAnimationBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +81,11 @@
 		EBA0077B27B66E13003BA955 /* PCkOverlayerImgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkOverlayerImgView.swift; sourceTree = "<group>"; };
 		EBCF724027BA524200F3E019 /* PCkSavePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkSavePopView.swift; sourceTree = "<group>"; };
 		EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifMakerCamVC.swift; sourceTree = "<group>"; };
+		EBF4F15627BF37CE00402AFC /* PCsGifConfigBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifConfigBar.swift; sourceTree = "<group>"; };
+		EBF4F15827BF3B3A00402AFC /* sizeScale.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sizeScale.json; sourceTree = "<group>"; };
+		EBF4F15A27BF416A00402AFC /* PCsGifContinePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifContinePreview.swift; sourceTree = "<group>"; };
+		EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifSaveConvertVC.swift; sourceTree = "<group>"; };
+		EBF4F16027BFA3E800402AFC /* PCsGifSaveAnimationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifSaveAnimationBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +180,7 @@
 				EB3AE60327B39A34007A896A /* PCkEvenM.swift */,
 				EB3AE60A27B3C5C4007A896A /* PCpDataManager.swift */,
 				EB9AFAAD27BA083B00ABAB6D /* layout.json */,
+				EBF4F15827BF3B3A00402AFC /* sizeScale.json */,
 			);
 			path = ToolExtension;
 			sourceTree = "<group>";
@@ -207,6 +218,10 @@
 			isa = PBXGroup;
 			children = (
 				EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */,
+				EBF4F15627BF37CE00402AFC /* PCsGifConfigBar.swift */,
+				EBF4F15A27BF416A00402AFC /* PCsGifContinePreview.swift */,
+				EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */,
+				EBF4F16027BFA3E800402AFC /* PCsGifSaveAnimationBar.swift */,
 			);
 			path = GifMaker;
 			sourceTree = "<group>";
@@ -275,6 +290,7 @@
 				EB9AFABA27BA263E00ABAB6D /* lut10.png in Resources */,
 				EB9AFABB27BA263E00ABAB6D /* lut_mianhuatang.png in Resources */,
 				EB9AFABF27BA263E00ABAB6D /* lut_tengman.png in Resources */,
+				EBF4F15927BF3B3A00402AFC /* sizeScale.json in Resources */,
 				EB9AFABC27BA263E00ABAB6D /* lut_mangu.png in Resources */,
 				EB9AFABD27BA263E00ABAB6D /* lut3.png in Resources */,
 				EB9AFAC227BA263E00ABAB6D /* lut_riguang.png in Resources */,
@@ -341,8 +357,11 @@
 				EB3AE60227B39A10007A896A /* SubscribeProtocal.swift in Sources */,
 				EB3AE60827B3A5BB007A896A /* PCsCameraVC.swift in Sources */,
 				EB9AFAAA27B9FA6F00ABAB6D /* PCkFilterBar.swift in Sources */,
+				EBF4F15F27BF8AC100402AFC /* PCsGifSaveConvertVC.swift in Sources */,
+				EBF4F15B27BF416A00402AFC /* PCsGifContinePreview.swift in Sources */,
 				EB3AE60427B39A34007A896A /* PCkEvenM.swift in Sources */,
 				EB3AE60027B399A9007A896A /* PCkPurchaseM.swift in Sources */,
+				EBF4F15727BF37CE00402AFC /* PCsGifConfigBar.swift in Sources */,
 				EBF4F15527BE3EA700402AFC /* PCsGifMakerCamVC.swift in Sources */,
 				948FD17B27B3932800D3156C /* ViewController.swift in Sources */,
 				EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */,
@@ -352,6 +371,7 @@
 				EB3AE60627B3A24B007A896A /* PCkSettingVC.swift in Sources */,
 				EB3AE5FB27B39632007A896A /* PCpMainVC.swift in Sources */,
 				EB9AFAAC27BA011200ABAB6D /* PCkLayoutPopView.swift in Sources */,
+				EBF4F16127BFA3E800402AFC /* PCsGifSaveAnimationBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
