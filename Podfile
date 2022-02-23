@@ -20,6 +20,9 @@ target 'PCkbsPositionCam' do
   pod 'AppsFlyerFramework'
   pod 'SRCountdownTimer'
   
-  pod 'LookinServer', :configurations => ['Debug']
+  pod 'Gifer'
+  pod 'SDWebImage', '~> 5.0'
+  
+#  pod 'LookinServer', :configurations => ['Debug']
   
 end

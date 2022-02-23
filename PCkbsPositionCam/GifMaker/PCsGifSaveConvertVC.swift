@@ -6,6 +6,13 @@
 //
 
 import UIKit
+import AVFoundation
+import Photos
+import BBMetalImage
+import ZKProgressHUD
+import Gifer
+import SDWebImage
+
 
 class ContinuePhotosItem {
     var img: UIImage
@@ -33,6 +40,20 @@ class PCsGifSaveConvertVC: UIViewController {
     var didLayoutOnce: Once = Once()
     
     
+    private var displayLink: CADisplayLink!
+    private var uiSource: BBMetalUISource!
+    private var videoWriter: BBMetalVideoWriter!
+    private var filePath: String!
+    var stepCount: Int64 = 0
+    var currentShowIndex: Int = 0
+    var isStartRecordVideo: Bool = false
+//    var isWaitingRecordVideoTwo: Bool = false
+    var currentProcessVideoFinishedBlock: (()->Void)?
+    var recordMetalV: BBMetalView!
+    
+    var isWaitingRecord: Bool = false
+    var isWillFinishRecord: Bool = false
+    
     init(photos: [UIImage]) {
         super.init(nibName: nil, bundle: nil)
         
@@ -48,8 +69,23 @@ class PCsGifSaveConvertVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupView()
+        setupContentImgV()
+        
+        setupRecordUI()
+        
+        
+    }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if displayLink != nil {
+            displayLink.invalidate()
+            displayLink = nil
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -77,13 +113,53 @@ class PCsGifSaveConvertVC: UIViewController {
                 topOffset = (topContentBgVHeight - cameraHeight) / 2
                 leftOffset = 0
             }
+            //防止生成的视频四周出现绿色条
+            while Int(cameraWidth) % 16 > 0 {
+                cameraWidth -= 1
+            }
+            while Int(cameraHeight) % 16 > 0 {
+                cameraHeight -= 1
+            }
+            leftOffset = (topContentBgVWidth - cameraWidth) / 2
+            topOffset = (topContentBgVHeight - cameraHeight) / 2
             
+            debugPrint("canvasWidth: \(cameraWidth)")
+            debugPrint("cameraHeight: \(cameraHeight)")
             //
-            canvasBgV.adhere(toSuperview: view)
-                .backgroundColor(.lightGray)
+            canvasBgV.adhere(toSuperview: self.topContentBgV)
+                .backgroundColor(.clear)
             canvasBgV.frame = CGRect(x: leftOffset, y: topOffset, width: cameraWidth, height: cameraHeight)
             
-             
+            //
+            let rectFrame: CGRect = CGRect(x: 0, y: 0, width: cameraWidth, height: cameraHeight)
+            
+            // record ui
+            let metalView = BBMetalView(frame: rectFrame)
+            metalView.bb_textureContentMode = .aspectRatioFit
+            canvasBgV.addSubview(metalView)
+            recordMetalV = metalView
+            //
+            uiSource = BBMetalUISource(view: canvasBgV)
+            
+            
+            let filter = BBMetalCropFilter(rect: BBMetalRect(x: 0, y: 0, width: 1, height: 1))
+            
+            uiSource
+                .add(consumer: filter)
+                .add(consumer: metalView)
+            
+            filePath = NSTemporaryDirectory() + "test.mp4"
+            let outputUrl = URL(fileURLWithPath: filePath)
+            let frameSize = uiSource.renderPixelSize!
+            debugPrint("uiSourceFrameSize = \(frameSize)")
+            videoWriter = BBMetalVideoWriter(url: outputUrl, frameSize: BBMetalIntSize(width: Int(frameSize.width), height: Int(frameSize.height)))
+            filter.add(consumer: videoWriter)
+            
+            do {
+                try? FileManager.default.removeItem(at: videoWriter.url)
+            } catch {
+                
+            }
             
         }
     }
@@ -105,18 +181,22 @@ extension PCsGifSaveConvertVC {
         //
 
         backBtn.adhere(toSuperview: topBanner)
+            .backgroundColor(.lightGray)
         backBtn.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.left.equalToSuperview().offset(10)
             $0.width.height.equalTo(44)
         }
+        backBtn.addTarget(self, action: #selector(backBtnClick(sender:)), for: .touchUpInside)
+        
+        
         
         //
         topContentBgV.adhere(toSuperview: view)
         topContentBgV.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.top.equalTo(topBanner.snp.bottom)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-200)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-100)
         }
         
         
@@ -129,14 +209,14 @@ extension PCsGifSaveConvertVC {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-200)
         }
         
-        var btnHeight: CGFloat = 70
+        let btnHeight: CGFloat = 70
         
         //
         let toGifBtn = UIButton()
         toGifBtn.backgroundColor(.white)
             .title("Save as GIF")
             .titleColor(UIColor.black)
-            .font(20, "AvenirNext-DemiBold")
+            .font(18, "AvenirNext-DemiBold")
             .adhere(toSuperview: bottomBar)
         toGifBtn.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
@@ -151,7 +231,7 @@ extension PCsGifSaveConvertVC {
         toLivePhotoBtn.backgroundColor(.white)
             .title("Save as LivePhoto")
             .titleColor(UIColor.black)
-            .font(20, "AvenirNext-DemiBold")
+            .font(18, "AvenirNext-DemiBold")
             .adhere(toSuperview: bottomBar)
         toLivePhotoBtn.snp.makeConstraints {
             $0.top.equalTo(toGifBtn.snp.top)
@@ -166,7 +246,7 @@ extension PCsGifSaveConvertVC {
         toVideoBtn.backgroundColor(.white)
             .title("Save as Video")
             .titleColor(UIColor.black)
-            .font(20, "AvenirNext-DemiBold")
+            .font(18, "AvenirNext-DemiBold")
             .adhere(toSuperview: bottomBar)
         toVideoBtn.snp.makeConstraints {
             $0.top.equalTo(toGifBtn.snp.bottom).offset(20)
@@ -179,9 +259,9 @@ extension PCsGifSaveConvertVC {
         //
         let savePhotosBtn = UIButton()
         savePhotosBtn.backgroundColor(.white)
-            .title("Save 8 Photos")
+            .title("Save \(continuePhotoData.takePhotos.count) Photos")
             .titleColor(UIColor.black)
-            .font(20, "AvenirNext-DemiBold")
+            .font(18, "AvenirNext-DemiBold")
             .adhere(toSuperview: bottomBar)
         savePhotosBtn.snp.makeConstraints {
             $0.top.equalTo(toVideoBtn.snp.top)
@@ -192,23 +272,339 @@ extension PCsGifSaveConvertVC {
         savePhotosBtn.addTarget(self, action: #selector(savePhotosBtnClick(sender:)), for: .touchUpInside)
         
     }
+    
+    func setupContentImgV() {
+        
+        for imgItem in continuePhotoData.takePhotos {
+            let contentImgV = UIImageView()
+            contentImgV.image = imgItem.img
+            contentImgV.adhere(toSuperview: canvasBgV)
+                .contentMode(.scaleAspectFill)
+            contentImgV.snp.makeConstraints {
+                $0.left.right.top.bottom.equalToSuperview()
+            }
+        }
+        
+    }
+    
+    func setupRecordUI() {
+        if displayLink == nil {
+            displayLink = CADisplayLink(target: self, selector: #selector(refreshDisplayLink(_:)))
+            displayLink.add(to: .main, forMode: .common)
+            displayLink.isPaused = false
+        }
+    }
+}
+
+extension PCsGifSaveConvertVC {
+    @objc private func refreshDisplayLink(_ link: CADisplayLink) {
+        let duration: Int64 = 20
+        
+        if isWaitingRecord == true {
+            for (indx, imV) in canvasBgV.subviews.enumerated() {
+                if indx == currentShowIndex {
+                    imV.alpha = 1
+                } else {
+                    imV.alpha = 0
+                }
+            }
+            
+            return
+        }
+        if stepCount == 0 {
+            if isWillFinishRecord {
+                self.finishePorcessVideo()
+                isWillFinishRecord = false
+            }
+        } else {
+            let yushu = stepCount % duration
+            if yushu == 0 {
+                
+                if currentShowIndex >= continuePhotoData.takePhotos.count  {
+                    currentShowIndex = 0
+                    if isStartRecordVideo {
+                        isWillFinishRecord = true
+                    }
+                    
+                    
+                   
+                } else {
+                     
+                }
+                
+                for (indx, imV) in canvasBgV.subviews.enumerated() {
+                    
+                    if indx == currentShowIndex {
+                        imV.alpha = 1
+                    } else {
+                        imV.alpha = 0
+                    }
+                }
+                currentShowIndex += 1
+                
+            } else {
+                
+            }
+        }
+        stepCount += 1
+        
+        let maxCount: Int = Int(duration) * continuePhotoData.takePhotos.count
+        if stepCount > maxCount {
+            stepCount = 0
+        }
+        
+        if isStartRecordVideo {
+            
+            uiSource.transmitTexture(with: CMTime(value: stepCount, timescale: 60))
+        }
+
+    }
+    
+    
+}
+
+extension PCsGifSaveConvertVC {
+    @objc func backBtnClick(sender: UIButton) {
+        try? FileManager.default.removeItem(at: videoWriter.url)
+        if self.navigationController != nil {
+            self.navigationController?.popViewController()
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+}
+
+extension PCsGifSaveConvertVC {
+    func processAndSaveGif() {
+         
+        Gifer.createGifFromVideo(videoWriter.url, frameRate: 30, loopCount: 0, startTime: 0, size: CGSize(width: self.canvasBgV.bounds.width, height: self.canvasBgV.bounds.height)) {[weak self] gifUrl, error in
+            
+            guard let `self` = self else {return}
+            if (error == nil) {
+                DispatchQueue.main.async {
+                    self.saveGifToAlbum(gifUrl: gifUrl)
+                }
+
+            }
+            
+        }
+    }
+    
+    func saveGifToAlbum(gifUrl: URL?) {
+        guard let url = gifUrl else { return }
+        if FileManager.default.fileExists(atPath: filePath) {
+            checkPhotoAuthorizeStatus {
+                [weak self] in
+                guard let `self` = self else {return}
+                do {
+                    let gifData = try Data.init(contentsOf: url)
+                    self.saveGif(data: gifData) { success in
+                        DispatchQueue.main.async {
+                            if success {
+                                ZKProgressHUD.dismiss()
+                                ZKProgressHUD.showSuccess("保存GIF成功", maskStyle: nil, onlyOnceFont: nil, autoDismissDelay: 1, completion: nil)
+                            } else {
+                                
+                            }
+                        }
+                        
+                    }
+                } catch {
+                    
+                }
+            }
+        }
+    }
+    
+    func saveGif(data: Data, completion: @escaping (_ success: Bool) -> ()) {
+
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetCreationRequest.forAsset().addResource(with: .photo, data: data, options: nil)
+        }) { (success, error) in completion(success) }
+    }
+     
+}
+
+extension PCsGifSaveConvertVC {
+    
+    func saveVideoToAlbum() {
+         
+        if FileManager.default.fileExists(atPath: filePath) {
+            saveVideoToAlbum(videoUrl: videoWriter.url) { success in
+                if success {
+                    DispatchQueue.main.async {
+                        ZKProgressHUD.dismiss()
+                        ZKProgressHUD.showSuccess("保存视频成功", maskStyle: nil, onlyOnceFont: nil, autoDismissDelay: 1, completion: nil)
+                    }
+                } else {
+                    let title = ""
+                    let message = "Save failed, please try it again."
+                    let okText = "OK"
+                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                    let okButton = UIAlertAction(title: okText, style: .cancel, handler: { (alert) in
+                    })
+                    alert.addAction(okButton)
+
+                    DispatchQueue.main.async {
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
+    }
+    
+    func finishePorcessVideo() {
+        
+        self.isStartRecordVideo = false
+ 
+         
+        self.videoWriter.finish { [weak self] in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.currentProcessVideoFinishedBlock?()
+                    debugPrint("videoUrl: \(self.videoWriter.url)")
+                    self.recordMetalV.isHidden = true
+ 
+                }
+            }
+        }
+        
+    }
+    
+    func processVideo(completion: @escaping (()->Void)) {
+        
+        self.currentProcessVideoFinishedBlock = completion
+        try? FileManager.default.removeItem(at: videoWriter.url)
+        
+        stepCount = 0
+        currentShowIndex = 0
+        recordMetalV.isHidden = false
+        
+        isWaitingRecord = true
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            [weak self] in
+            guard let `self` = self else {return}
+            self.isWaitingRecord = false
+            
+            self.isStartRecordVideo = true
+            self.videoWriter.start()
+        }
+    }
+}
+
+extension PCsGifSaveConvertVC {
+    
+    func checkPhotoAuthorizeStatus(authorizedBlock: @escaping (()->Void)) {
+        let status = PHPhotoLibrary.authorizationStatus()
+        if status == PHAuthorizationStatus.authorized {
+            authorizedBlock()
+            
+        } else if (status == PHAuthorizationStatus.restricted || status == PHAuthorizationStatus.denied) {
+            self.albumPermissionsAlet()
+        } else {
+            PHPhotoLibrary.requestAuthorization {
+                [weak self] status in
+                guard let `self` = self else {return}
+                
+                if status == PHAuthorizationStatus.authorized {
+                    DispatchQueue.main.async {
+                        authorizedBlock()
+                    }
+                    
+                    
+                }
+            }
+        }
+    }
+    
+    func saveVideoToAlbum(videoUrl: URL, completion: @escaping ((Bool)->Void)) {
+        checkPhotoAuthorizeStatus {
+            [weak self] in
+            guard let `self` = self else {return}
+            DispatchQueue.main.async {
+                self.finishedSaveVideo(videoUrl: videoUrl, completion: completion)
+            }
+            
+        }
+        
+    }
+    
+    func finishedSaveVideo(videoUrl: URL, completion: @escaping ((Bool)->Void)) {
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoUrl)
+
+        }) { (isSuccess: Bool, error: Error?) in
+            if isSuccess {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }
+    }
+    
+    func albumPermissionsAlet() {
+        DispatchQueue.main.async {
+            [weak self] in
+            guard let `self` = self else {return}
+            let alert = UIAlertController(title: "Oops", message: "You have declined access to photos, please active it in Settings>Privacy>Photos.", preferredStyle: .alert)
+            let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: { (goSettingAction) in
+                DispatchQueue.main.async {
+                    let url = URL(string: UIApplication.openSettingsURLString)!
+                    UIApplication.shared.open(url, options: [:])
+                }
+            })
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+            alert.addAction(confirmAction)
+            alert.addAction(cancelAction)
+            
+            self.present(alert, animated: true)
+        }
+    }
 }
 
 extension PCsGifSaveConvertVC {
     @objc func toGifBtnClick(sender: UIButton) {
-        
+        ZKProgressHUD.show("processing", maskStyle: nil, onlyOnceFont: nil)
+        if FileManager.default.fileExists(atPath: filePath) {
+            processAndSaveGif()
+        } else {
+            processVideo {
+                [weak self] in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    self.processAndSaveGif()
+                }
+            }
+        }
     }
     
     @objc func toVideoBtnClick(sender: UIButton) {
+        ZKProgressHUD.show("processing", maskStyle: nil, onlyOnceFont: nil)
+        if FileManager.default.fileExists(atPath: filePath) {
+            saveVideoToAlbum()
+        } else {
+            processVideo {
+                [weak self] in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    self.saveVideoToAlbum()
+                }
+                
+            }
+        }
+        
+        
         
     }
     
     @objc func toLivePhotoBtnClick(sender: UIButton) {
-        
+        ZKProgressHUD.show("processing", maskStyle: nil, onlyOnceFont: nil)
     }
     
     @objc func savePhotosBtnClick(sender: UIButton) {
-        
+        ZKProgressHUD.show("processing", maskStyle: nil, onlyOnceFont: nil)
     }
     
 }
