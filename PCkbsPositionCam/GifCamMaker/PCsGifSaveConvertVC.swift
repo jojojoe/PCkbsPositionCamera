@@ -28,6 +28,15 @@ class PCsGifContinuePhotosData {
     
 }
 
+enum GifAnimationType {
+    case normal
+    case alpha
+    case leftMove
+    case topMove
+}
+ 
+
+
 class PCsGifSaveConvertVC: UIViewController {
     
     let continuePhotoData = PCsGifContinuePhotosData()
@@ -38,7 +47,7 @@ class PCsGifSaveConvertVC: UIViewController {
     var topContentBgV: UIView = UIView()
     var canvasBgV: UIView = UIView()
     var didLayoutOnce: Once = Once()
-    
+    var previewImgVList: [UIImageView] = []
     
     private var displayLink: CADisplayLink!
     private var uiSource: BBMetalUISource!
@@ -48,12 +57,15 @@ class PCsGifSaveConvertVC: UIViewController {
     var stepCount: Int64 = 0
     var currentShowIndex: Int = 0
     var isStartRecordVideo: Bool = false
-//    var isWaitingRecordVideoTwo: Bool = false
+    
     var currentProcessVideoFinishedBlock: (()->Void)?
     var recordMetalV: BBMetalView!
     
     var isWaitingRecord: Bool = false
     var isWillFinishRecord: Bool = false
+    var animationType: GifAnimationType = .normal
+    
+    
     
     init(photos: [UIImage]) {
         super.init(nibName: nil, bundle: nil)
@@ -276,11 +288,19 @@ extension PCsGifSaveConvertVC {
     
     func setupContentImgV() {
         
+        previewImgVList = []
+        
         for imgItem in continuePhotoData.takePhotos {
             let contentImgV = UIImageView()
             contentImgV.image = imgItem.img
             contentImgV.adhere(toSuperview: canvasBgV)
                 .contentMode(.scaleAspectFill)
+//            if previewImgVList.count == 0 {
+//                previewImgVList.append(contentImgV)
+//            } else {
+//                previewImgVList.insert(contentImgV, at: 0)
+//            }
+            previewImgVList.append(contentImgV)
             contentImgV.snp.makeConstraints {
                 $0.left.right.top.bottom.equalToSuperview()
             }
@@ -298,11 +318,18 @@ extension PCsGifSaveConvertVC {
 }
 
 extension PCsGifSaveConvertVC {
-    @objc private func refreshDisplayLink(_ link: CADisplayLink) {
+    // 按顺序透明度变化动画
+    
+    func gifNormalAnimation() {
+        
         let duration: Int64 = 20
+        debugPrint("canvasBgV.subviews = \(canvasBgV.subviews.count)")
+        debugPrint("previewImgVList = \(previewImgVList.count)")
+        debugPrint("continuePhotoData.takePhotos = \(continuePhotoData.takePhotos.count)")
+
         
         if isWaitingRecord == true {
-            for (indx, imV) in canvasBgV.subviews.enumerated() {
+            for (indx, imV) in previewImgVList.enumerated() {
                 if indx == currentShowIndex {
                     imV.alpha = 1
                 } else {
@@ -320,9 +347,9 @@ extension PCsGifSaveConvertVC {
             } else {
                 let yushu = stepCount % duration
                 if yushu == 0 {
-                    if currentShowIndex >= continuePhotoData.takePhotos.count {
+                    if currentShowIndex >= continuePhotoData.takePhotos.count - 1 {
                         currentShowIndex = 0
-                        for (indx, imV) in canvasBgV.subviews.enumerated() {
+                        for (indx, imV) in previewImgVList.enumerated() {
                             if indx == currentShowIndex {
                                 imV.alpha = 1
                             } else {
@@ -332,27 +359,40 @@ extension PCsGifSaveConvertVC {
                         
                         isWillFinishRecord = true
                     } else {
-                        currentShowIndex += 1
-                        for (indx, imV) in canvasBgV.subviews.enumerated() {
-                            
-                            if indx == currentShowIndex {
-                                imV.alpha = 1
-                            } else {
-                                imV.alpha = 0
+                        if stepCount == 0 {
+                            for (indx, imV) in previewImgVList.enumerated() {
+                                
+                                if indx == 0 {
+                                    imV.alpha = 1
+                                } else {
+                                    imV.alpha = 0
+                                }
+                            }
+                        } else {
+                            currentShowIndex += 1
+                            for (indx, imV) in previewImgVList.enumerated() {
+                                
+                                if indx == currentShowIndex {
+                                    imV.alpha = 1
+                                } else {
+                                    imV.alpha = 0
+                                }
                             }
                         }
+                        
                     }
                 }
             }
         } else {
             let yushu = stepCount % duration
             if yushu == 0 {
+                //  - 1
                 if currentShowIndex >= continuePhotoData.takePhotos.count - 1 {
                     currentShowIndex = 0
                 } else {
                     currentShowIndex += 1
                 }
-                for (indx, imV) in canvasBgV.subviews.enumerated() {
+                for (indx, imV) in previewImgVList.enumerated() {
                     
                     if indx == currentShowIndex {
                         imV.alpha = 1
@@ -365,10 +405,41 @@ extension PCsGifSaveConvertVC {
         
         stepCount += 1
         
-        let maxCount: Int = Int(duration) * continuePhotoData.takePhotos.count
         if isStartRecordVideo {
             uiSource.transmitTexture(with: CMTime(value: stepCount, timescale: 60))
         }
+    }
+    
+    func gifAlphaAnimation() {
+        
+    }
+    
+    func gifLeftMoveAnimation() {
+        
+    }
+    
+    func gifTopMoveAnimation() {
+        
+    }
+    
+}
+
+
+extension PCsGifSaveConvertVC {
+    @objc private func refreshDisplayLink(_ link: CADisplayLink) {
+        
+        switch animationType {
+        case .normal:
+            gifNormalAnimation()
+        case .alpha:
+            gifAlphaAnimation()
+        case .leftMove:
+            gifLeftMoveAnimation()
+        case .topMove:
+            gifTopMoveAnimation()
+        
+        }
+        
     }
     
     
@@ -534,7 +605,7 @@ extension PCsGifSaveConvertVC {
         stepCount = 0
         currentShowIndex = 0
         recordMetalV.isHidden = false
-        
+        recordMetalV.alpha = 0
         isWaitingRecord = true
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
