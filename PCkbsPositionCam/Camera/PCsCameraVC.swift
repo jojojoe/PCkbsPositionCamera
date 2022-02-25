@@ -19,14 +19,17 @@ class PCsCameraVC: UIViewController {
     private var metalView: BBMetalView!
     var canvasBgV: UIView = UIView()
     let topContentBgV = UIView()
-    
+    let bottomBar = UIView()
+    let toolBgV = UIView()
+    let layoutTypeBtn = UIButton()
     var backBtn = UIButton()
     var takePhotoBtn = UIButton()
     var camPositionBtn = UIButton()
     var overlayerImgViews: [PCkOverlayerImgView] = []
     var overlayerLines: [UIView] = []
     let filterBar = PCkFilterBar()
-
+    var partFullImgsList: [UIImage] = []
+    var cutImgsList: [UIImage] = []
     let layoutTypeBar = PCkLayoutPopView()
     var currentLayoutTypeItem:  PCpLayoutItem?
     var currentTakingOverImgV: PCkOverlayerImgView?
@@ -38,7 +41,8 @@ class PCsCameraVC: UIViewController {
     var didLayoutOnce: Once = Once()
     
     var isReadyCamera: Bool = false
-    
+    var isCancel: Bool = false
+    var isTakingStatus: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +52,9 @@ class PCsCameraVC: UIViewController {
         setupView()
         setupLayoutTypePopupView()
         setupSavePopupView()
+        
+        showsetupLayoutPopupViewView()
+        layoutTypeBtn.isSelected = true
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
             [weak self] in
@@ -132,7 +139,7 @@ class PCsCameraVC: UIViewController {
         //
         view.backgroundColor(UIColor(hexString: "F4F4F4")!)
         //
-        let bottomBar = UIView()
+
         bottomBar
             .backgroundColor(.white)
             .adhere(toSuperview: view)
@@ -142,7 +149,7 @@ class PCsCameraVC: UIViewController {
             $0.height.equalTo(120)
         }
         //
-        let toolBgV = UIView()
+        
         toolBgV.backgroundColor(.white)
             .adhere(toSuperview: view)
         toolBgV.snp.makeConstraints {
@@ -224,7 +231,7 @@ class PCsCameraVC: UIViewController {
         }
         
         //
-        let layoutTypeBtn = UIButton()
+        
         layoutTypeBtn.adhere(toSuperview: toolBgV)
             .backgroundColor(.lightGray)
         layoutTypeBtn.snp.makeConstraints {
@@ -372,7 +379,12 @@ extension PCsCameraVC {
 
 extension PCsCameraVC {
     @objc func layoutTypeBtnClick(sender: UIButton) {
-        showsetupLayoutPopupViewView()
+        if layoutTypeBtn.isSelected == true {
+            self.layoutTypeBar.backBtnClickBlock?()
+        } else {
+            showsetupLayoutPopupViewView()
+        }
+        layoutTypeBtn.isSelected = !layoutTypeBtn.isSelected
     }
     
     
@@ -393,34 +405,38 @@ extension PCsCameraVC {
     func showSavePopupViewView() {
         // show coin alert
         let img = self.processSaveImg()
-        self.savePopupView.contentImgV.frame = self.canvasBgV.frame
-        self.savePopupView.contentImgV.image = img
+        let saveVC = PCsGifSaveConvertVC(photos: partFullImgsList, img, true)
+        self.navigationController?.pushViewController(saveVC, animated: true)
         
-        UIView.animate(withDuration: 0.35) {
-            self.savePopupView.alpha = 1
-        }
-        savePopupView.saveBtnClickBlock = {
-            [weak self] img in
-            guard let `self` = self else {return}
-            self.saveAlertSaveAction(img: img)
-        }
-        savePopupView.shareBtnClickBlock = {
-            [weak self] img in
-            guard let `self` = self else {return}
-            self.saveAlertShareAction(img: img)
-        }
-        
-        savePopupView.backBtnClickBlock = {
-            [weak self] in
-            guard let `self` = self else {return}
-            UIView.animate(withDuration: 0.25) {
-                self.savePopupView.alpha = 0
-            } completion: { finished in
-                if finished {
-                    self.saveAlertBackAction()
-                }
-            }
-        }
+//
+//        self.savePopupView.contentImgV.frame = self.canvasBgV.frame
+//        self.savePopupView.contentImgV.image = img
+//
+//        UIView.animate(withDuration: 0.35) {
+//            self.savePopupView.alpha = 1
+//        }
+//        savePopupView.saveBtnClickBlock = {
+//            [weak self] img in
+//            guard let `self` = self else {return}
+//            self.saveAlertSaveAction(img: img)
+//        }
+//        savePopupView.shareBtnClickBlock = {
+//            [weak self] img in
+//            guard let `self` = self else {return}
+//            self.saveAlertShareAction(img: img)
+//        }
+//
+//        savePopupView.backBtnClickBlock = {
+//            [weak self] in
+//            guard let `self` = self else {return}
+//            UIView.animate(withDuration: 0.25) {
+//                self.savePopupView.alpha = 0
+//            } completion: { finished in
+//                if finished {
+//                    self.saveAlertBackAction()
+//                }
+//            }
+//        }
     }
 }
 
@@ -462,7 +478,9 @@ extension PCsCameraVC {
         layoutTypeBar.alpha = 0
         view.addSubview(layoutTypeBar)
         layoutTypeBar.snp.makeConstraints {
-            $0.left.right.bottom.top.equalToSuperview()
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalTo(toolBgV.snp.top)
+            $0.height.equalTo(60)
         }
         
     }
@@ -476,16 +494,17 @@ extension PCsCameraVC {
         layoutTypeBar.layoutItemClickBlock = {
             [weak self] item in
             guard let `self` = self else {return}
-              
-            self.currentLayoutTypeItem = item
-            self.setupOverlayerLayout()
-            UIView.animate(withDuration: 0.25) {
-                self.layoutTypeBar.alpha = 0
-            } completion: { finished in
-                if finished {
-                    
-                }
+            DispatchQueue.main.async {
+                self.currentLayoutTypeItem = item
+                self.setupOverlayerLayout()
             }
+//            UIView.animate(withDuration: 0.25) {
+//                self.layoutTypeBar.alpha = 0
+//            } completion: { finished in
+//                if finished {
+//                    
+//                }
+//            }
         }
         
         
@@ -565,12 +584,16 @@ extension PCsCameraVC {
     
     func showIsTakingPhotoStatus(isTaking: Bool) {
         
+        
+        
         if isTaking {
             backBtn.isHidden = true
             camPositionBtn.isHidden = true
+            isTakingStatus = true
         } else {
             backBtn.isHidden = false
             camPositionBtn.isHidden = false
+            isTakingStatus = false
         }
         
         
@@ -579,25 +602,33 @@ extension PCsCameraVC {
     
     func takePhotoWithPosition(completion: @escaping (()->Void)) {
        
-         
         func processBlock() {
             
             self.currentTakingOverImgV?.startCounting()
             self.currentTakingOverImgV?.countdownEndBlock = {
                 [weak self] in
                 guard let `self` = self else {return}
-                self.takePhoto(overlayerV: self.currentTakingOverImgV) {[weak self] cutImg in
+                self.takePhoto(overlayerV: self.currentTakingOverImgV) {[weak self] cutImg, partFullImg in
                     guard let `self` = self else {return}
+                    if let partFullImg_m = partFullImg {
+                        self.partFullImgsList.append(partFullImg_m)
+                    }
+                    if let cutImg_m = cutImg {
+                        self.cutImgsList.append(cutImg_m)
+                    }
+                    
                     self.currentTakingOverImgV?.imgV.image = cutImg
                     self.currentTakingOverImgVIndex += 1
                     
                     if self.currentTakingOverImgVIndex >= self.overlayerImgViews.count {
-                         
                         completion()
                     } else {
                         self.currentTakingOverImgV = self.overlayerImgViews[self.currentTakingOverImgVIndex]
-                        processBlock()
-                        
+                        if self.isCancel == true {
+                            self.isCancel = false
+                        } else {
+                            processBlock()
+                        }
                     }
                 }
             }
@@ -608,7 +639,7 @@ extension PCsCameraVC {
     }
     
     
-    func takePhoto(overlayerV: PCkOverlayerImgView?, completion: @escaping ((UIImage?)->Void)) {
+    func takePhoto(overlayerV: PCkOverlayerImgView?, completion: @escaping ((UIImage?, UIImage?)->Void)) {
         if let overlayerV_m = overlayerV {
             camera.capturePhoto { [weak self] info in
                 switch info.result {
@@ -628,26 +659,50 @@ extension PCsCameraVC {
                             let imgHeight: CGFloat = overlayerV_m.frame.height * scaleH
                             let cropRect = CGRect(x: orightX, y: orightY, width: imgWidth, height: imgHeight)
                             guard let cutImageRef: CGImage = fullImg.cgImage?.cropping(to:cropRect)
-                                else {
-                                    completion(nil)
-                                    return
-                                }
-
-                                // Return image to UIImage
-                                let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
-                                completion(croppedImage)
+                            else {
+                                completion(nil, nil)
+                                return
+                            }
+                            
+                            // Return image to UIImage
+                            let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
+                            //
+                            let partImgBgV = UIView(frame: CGRect(x: 0, y: 0, width: fullImg.size.width, height: fullImg.size.height))
+                            partImgBgV.backgroundColor(.white)
+                            //
+                            for (idx, befaultCutImg) in self.cutImgsList.enumerated() {
+                                let partImgV = UIImageView(image: befaultCutImg)
+                                let boverlayerImgV = self.overlayerImgViews[idx]
+                                let borightX: CGFloat = boverlayerImgV.frame.origin.x * scaleW
+                                let borightY: CGFloat = boverlayerImgV.frame.origin.y * scaleH
+                                let bimgWidth: CGFloat = boverlayerImgV.frame.width * scaleW
+                                let bimgHeight: CGFloat = boverlayerImgV.frame.height * scaleH
+                                let beforeRect = CGRect(x: borightX, y: borightY, width: bimgWidth, height: bimgHeight)
+                                partImgV.frame = beforeRect
+                                partImgV.adhere(toSuperview: partImgBgV)
+                            }
+                            //
+                            let partImgV = UIImageView(image: UIImage(cgImage: cutImageRef))
+                            partImgV.frame = CGRect(x: orightX, y: orightY, width: imgWidth, height: imgHeight)
+                            partImgV.adhere(toSuperview: partImgBgV)
+                            
+                            
+                            var fullPartImg: UIImage? = nil
+                            fullPartImg = partImgBgV.screenshot
+                           
+                            completion(croppedImage, fullPartImg)
                             
                         } else {
-                            completion(nil)
+                            completion(nil, nil)
                         }
                     }
                 case let .failure(error):
                     print("Error: \(error)")
-                    completion(nil)
+                    completion(nil, nil)
                 }
             }
         } else {
-            completion(nil)
+            completion(nil, nil)
         }
         
     }
@@ -681,21 +736,34 @@ extension PCsCameraVC {
 
     @objc func takePhotoBtnClick(sender: UIButton) {
         // show taking status
-        showIsTakingPhotoStatus(isTaking: true)
+        if layoutTypeBtn.isSelected == true {
+            self.layoutTypeBar.backBtnClickBlock?()
+        }
         
+        
+        if isTakingStatus == false {
+            showIsTakingPhotoStatus(isTaking: true)
+            
+            takePhotoWithPosition {
+                [weak self] in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    self.camera.stop()
+                    self.showIsTakingPhotoStatus(isTaking: false)
+                    self.showSavePopupViewView()
+                }
+                
+            }
+        } else {
+            isCancel = true
+            
+        }
+        
+        partFullImgsList = []
+        cutImgsList = []
         currentTakingOverImgVIndex = 0
         currentTakingOverImgV = overlayerImgViews.first
         
-        takePhotoWithPosition {
-            [weak self] in
-            guard let `self` = self else {return}
-            DispatchQueue.main.async {
-                self.camera.stop()
-                self.showIsTakingPhotoStatus(isTaking: false)
-                self.showSavePopupViewView()
-            }
-            
-        }
         
         
         

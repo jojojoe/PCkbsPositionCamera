@@ -49,6 +49,11 @@ class PCsGifSaveConvertVC: UIViewController {
     var didLayoutOnce: Once = Once()
     var previewImgVList: [UIImageView] = []
     
+    let topContentMaskBgV = UIView()
+    let canvasMaskBgV = UIView()
+    var thumbPreviewImgVList: [UIImageView] = []
+    
+    
     private var displayLink: CADisplayLink!
     private var uiSource: BBMetalUISource!
     private var videoWriter: BBMetalVideoWriter!
@@ -65,9 +70,14 @@ class PCsGifSaveConvertVC: UIViewController {
     var isWillFinishRecord: Bool = false
     var animationType: GifAnimationType = .normal
     
+    var resultPhotos: [UIImage]
+    var resultSaveImg: UIImage?
+    var isResultSavePhoto: Bool = false
     
-    
-    init(photos: [UIImage]) {
+    init(photos: [UIImage], _ resultSaveImg: UIImage? = nil, _ isResultSavePhoto: Bool = false) {
+        self.resultPhotos = photos
+        self.resultSaveImg = resultSaveImg // 是否有最后的单独保存的完整图片
+        self.isResultSavePhoto = isResultSavePhoto // 是否显示保存图片按钮
         super.init(nibName: nil, bundle: nil)
         
         for photo in photos {
@@ -115,6 +125,9 @@ class PCsGifSaveConvertVC: UIViewController {
             let cameraWH: CGFloat = 3/4
             var cameraWidth: CGFloat = 1
             var cameraHeight: CGFloat = 1
+            var cameraWidthThumb: CGFloat = 1
+            var cameraHeightThumb: CGFloat = 1
+            
             if topWH > cameraWH {
                 cameraWidth = topContentBgVHeight * cameraWH
                 cameraHeight = topContentBgVHeight
@@ -136,12 +149,32 @@ class PCsGifSaveConvertVC: UIViewController {
             leftOffset = (topContentBgVWidth - cameraWidth) / 2
             topOffset = (topContentBgVHeight - cameraHeight) / 2
             
+            cameraWidthThumb = cameraWidth
+            cameraHeightThumb = cameraHeight
+            cameraWidth = cameraWidth * 4
+            cameraHeight = cameraHeight * 4
+            
             debugPrint("canvasWidth: \(cameraWidth)")
             debugPrint("cameraHeight: \(cameraHeight)")
             //
+
             canvasBgV.adhere(toSuperview: self.topContentBgV)
                 .backgroundColor(.clear)
             canvasBgV.frame = CGRect(x: leftOffset, y: topOffset, width: cameraWidth, height: cameraHeight)
+            
+            //
+            
+            topContentMaskBgV.adhere(toSuperview: topContentBgV)
+                .backgroundColor(.white)
+            topContentMaskBgV.snp.makeConstraints {
+                $0.left.right.top.bottom.equalToSuperview()
+            }
+            
+            //
+            canvasMaskBgV.adhere(toSuperview: topContentMaskBgV)
+                .backgroundColor(.white)
+            canvasMaskBgV.frame = CGRect(x: leftOffset, y: topOffset, width: cameraWidthThumb, height: cameraHeightThumb)
+            
             
             //
             let rectFrame: CGRect = CGRect(x: 0, y: 0, width: cameraWidth, height: cameraHeight)
@@ -165,7 +198,7 @@ class PCsGifSaveConvertVC: UIViewController {
             let outputUrl = URL(fileURLWithPath: filePath)
             let frameSize = uiSource.renderPixelSize!
             debugPrint("uiSourceFrameSize = \(frameSize)")
-            videoWriter = BBMetalVideoWriter(url: outputUrl, frameSize: BBMetalIntSize(width: Int(frameSize.width), height: Int(frameSize.height)), fileType: .mov)
+            videoWriter = BBMetalVideoWriter(url: outputUrl, frameSize: BBMetalIntSize(width: Int(frameSize.width) , height: Int(frameSize.height) ), fileType: .mov)
             filter.add(consumer: videoWriter)
             
             do {
@@ -206,6 +239,7 @@ extension PCsGifSaveConvertVC {
         
         //
         topContentBgV.adhere(toSuperview: view)
+            .clipsToBounds()
         topContentBgV.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.top.equalTo(topBanner.snp.bottom)
@@ -268,39 +302,50 @@ extension PCsGifSaveConvertVC {
             $0.right.equalTo(view.safeAreaLayoutGuide.snp.centerX).offset(-10)
         }
         toVideoBtn.addTarget(self, action: #selector(toVideoBtnClick(sender: )), for: .touchUpInside)
-        
-        //
-        let savePhotosBtn = UIButton()
-        savePhotosBtn.backgroundColor(.white)
-            .title("Save Photos")
-            .titleColor(UIColor.black)
-            .font(18, "AvenirNext-DemiBold")
-            .adhere(toSuperview: bottomBar)
-        savePhotosBtn.snp.makeConstraints {
-            $0.top.equalTo(toVideoBtn.snp.top)
-            $0.right.equalToSuperview().offset(-20)
-            $0.height.equalTo(btnHeight)
-            $0.left.equalTo(view.safeAreaLayoutGuide.snp.centerX).offset(10)
+        // 用来控制 savePhotosBtn 显示不显示
+        if isResultSavePhoto {
+            //
+            let savePhotosBtn = UIButton()
+            savePhotosBtn.backgroundColor(.white)
+                .title("Save Photos")
+                .titleColor(UIColor.black)
+                .font(18, "AvenirNext-DemiBold")
+                .adhere(toSuperview: bottomBar)
+            savePhotosBtn.snp.makeConstraints {
+                $0.top.equalTo(toVideoBtn.snp.top)
+                $0.right.equalToSuperview().offset(-20)
+                $0.height.equalTo(btnHeight)
+                $0.left.equalTo(view.safeAreaLayoutGuide.snp.centerX).offset(10)
+            }
+            savePhotosBtn.addTarget(self, action: #selector(savePhotosBtnClick(sender:)), for: .touchUpInside)
+        } else {
+            
         }
-        savePhotosBtn.addTarget(self, action: #selector(savePhotosBtnClick(sender:)), for: .touchUpInside)
+        
         
     }
     
     func setupContentImgV() {
         
         previewImgVList = []
-        
+        thumbPreviewImgVList = []
         for imgItem in continuePhotoData.takePhotos {
             let contentImgV = UIImageView()
             contentImgV.image = imgItem.img
             contentImgV.adhere(toSuperview: canvasBgV)
                 .contentMode(.scaleAspectFill)
-//            if previewImgVList.count == 0 {
-//                previewImgVList.append(contentImgV)
-//            } else {
-//                previewImgVList.insert(contentImgV, at: 0)
-//            }
             previewImgVList.append(contentImgV)
+            contentImgV.snp.makeConstraints {
+                $0.left.right.top.bottom.equalToSuperview()
+            }
+        }
+        // content mask
+        for imgItem in continuePhotoData.takePhotos {
+            let contentImgV = UIImageView()
+            contentImgV.image = imgItem.img
+            contentImgV.adhere(toSuperview: canvasMaskBgV)
+                .contentMode(.scaleAspectFill)
+            thumbPreviewImgVList.append(contentImgV)
             contentImgV.snp.makeConstraints {
                 $0.left.right.top.bottom.equalToSuperview()
             }
@@ -323,17 +368,21 @@ extension PCsGifSaveConvertVC {
     func gifNormalAnimation() {
         
         let duration: Int64 = 20
-        debugPrint("canvasBgV.subviews = \(canvasBgV.subviews.count)")
-        debugPrint("previewImgVList = \(previewImgVList.count)")
-        debugPrint("continuePhotoData.takePhotos = \(continuePhotoData.takePhotos.count)")
+//        debugPrint("canvasBgV.subviews = \(canvasBgV.subviews.count)")
+//        debugPrint("previewImgVList = \(previewImgVList.count)")
+//        debugPrint("continuePhotoData.takePhotos = \(continuePhotoData.takePhotos.count)")
 
         
         if isWaitingRecord == true {
             for (indx, imV) in previewImgVList.enumerated() {
                 if indx == currentShowIndex {
                     imV.alpha = 1
+                    let thumbImgV = thumbPreviewImgVList[indx]
+                    thumbImgV.alpha = 1
                 } else {
                     imV.alpha = 0
+                    let thumbImgV = thumbPreviewImgVList[indx]
+                    thumbImgV.alpha = 0
                 }
             }
             
@@ -352,8 +401,12 @@ extension PCsGifSaveConvertVC {
                         for (indx, imV) in previewImgVList.enumerated() {
                             if indx == currentShowIndex {
                                 imV.alpha = 1
+                                let thumbImgV = thumbPreviewImgVList[indx]
+                                thumbImgV.alpha = 1
                             } else {
                                 imV.alpha = 0
+                                let thumbImgV = thumbPreviewImgVList[indx]
+                                thumbImgV.alpha = 0
                             }
                         }
                         
@@ -364,8 +417,12 @@ extension PCsGifSaveConvertVC {
                                 
                                 if indx == 0 {
                                     imV.alpha = 1
+                                    let thumbImgV = thumbPreviewImgVList[indx]
+                                    thumbImgV.alpha = 1
                                 } else {
                                     imV.alpha = 0
+                                    let thumbImgV = thumbPreviewImgVList[indx]
+                                    thumbImgV.alpha = 0
                                 }
                             }
                         } else {
@@ -374,8 +431,12 @@ extension PCsGifSaveConvertVC {
                                 
                                 if indx == currentShowIndex {
                                     imV.alpha = 1
+                                    let thumbImgV = thumbPreviewImgVList[indx]
+                                    thumbImgV.alpha = 1
                                 } else {
                                     imV.alpha = 0
+                                    let thumbImgV = thumbPreviewImgVList[indx]
+                                    thumbImgV.alpha = 0
                                 }
                             }
                         }
@@ -396,8 +457,12 @@ extension PCsGifSaveConvertVC {
                     
                     if indx == currentShowIndex {
                         imV.alpha = 1
+                        let thumbImgV = thumbPreviewImgVList[indx]
+                        thumbImgV.alpha = 1
                     } else {
                         imV.alpha = 0
+                        let thumbImgV = thumbPreviewImgVList[indx]
+                        thumbImgV.alpha = 0
                     }
                 }
             }
@@ -531,8 +596,15 @@ extension PCsGifSaveConvertVC {
     }
     
     func saveLivePhoto(completion: @escaping (_ success: Bool) -> ()) {
-        let firstItem = continuePhotoData.takePhotos.first
-        let converImg = firstItem?.img
+        
+        var converImg: UIImage?
+        if let resultI = resultSaveImg {
+            converImg = resultI
+        } else {
+            let firstItem = continuePhotoData.takePhotos.first
+            converImg = firstItem?.img
+        }
+        
         if let converImg_m = converImg {
             coverImgfilePath = NSTemporaryDirectory() + "testCoverImg.jpg"
             let photoUrl = URL(fileURLWithPath: coverImgfilePath)
@@ -810,11 +882,18 @@ extension PCsGifSaveConvertVC {
     
     @objc func savePhotosBtnClick(sender: UIButton) {
         ZKProgressHUD.show("processing", maskStyle: nil, onlyOnceFont: nil)
-        var imgs: [UIImage] = []
-        for item in continuePhotoData.takePhotos {
-            imgs.append(item.img)
+        if let resultI = resultSaveImg {
+            saveImgsToAlbum(imgs: [resultI])
+        } else {
+            var imgs: [UIImage] = []
+            for item in continuePhotoData.takePhotos {
+                imgs.append(item.img)
+            }
+            saveImgsToAlbum(imgs: imgs)
         }
-        saveImgsToAlbum(imgs: imgs)
+        
+        
+        
         
     }
     

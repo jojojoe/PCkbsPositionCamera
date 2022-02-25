@@ -34,7 +34,7 @@ class PCkOverlayerImgView: UIView, SRCountdownTimerDelegate {
         
         //
         
-        countdownLabel.labelFont = UIFont(name: "AvenirNext-Bold", size: 34.0)
+        countdownLabel.labelFont = UIFont(name: "AvenirNext-Bold", size: 28.0)
         countdownLabel.backgroundColor(UIColor.black.withAlphaComponent(0.25))
         countdownLabel.labelTextColor = UIColor.white
         countdownLabel.timerFinishingText = ""

@@ -66,21 +66,21 @@ class PCkLayoutPopView: UIView {
         //        contentV.layer.borderColor = UIColor.black.cgColor
         contentV.snp.makeConstraints {
             $0.left.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.top.equalTo(self.safeAreaLayoutGuide.snp.bottom).offset(-190)
+            $0.bottom.top.equalToSuperview()
+//            $0.top.equalTo(self.safeAreaLayoutGuide.snp.bottom).offset(-190)
         }
         
         //
-        let backBtn = UIButton(type: .custom)
-        backBtn
-            .backgroundColor(UIColor(hexString: "#FFEBF0")!)
-            .adhere(toSuperview: contentV)
-        backBtn.snp.makeConstraints {
-            $0.top.equalTo(contentV.snp.top)
-            $0.right.left.equalToSuperview()
-            $0.height.equalTo(30)
-        }
-        backBtn.addTarget(self, action: #selector(backBtnClick(sender:)), for: .touchUpInside)
+//        let backBtn = UIButton(type: .custom)
+//        backBtn
+//            .backgroundColor(UIColor(hexString: "#FFEBF0")!)
+//            .adhere(toSuperview: contentV)
+//        backBtn.snp.makeConstraints {
+//            $0.top.equalTo(contentV.snp.top)
+//            $0.right.left.equalToSuperview()
+//            $0.height.equalTo(30)
+//        }
+//        backBtn.addTarget(self, action: #selector(backBtnClick(sender:)), for: .touchUpInside)
         
         //
         
@@ -94,8 +94,8 @@ class PCkLayoutPopView: UIView {
         collection.dataSource = self
         collection.adhere(toSuperview: contentV)
         collection.snp.makeConstraints {
-            $0.bottom.right.left.equalToSuperview()
-            $0.top.equalTo(backBtn.snp.bottom)
+            $0.top.bottom.right.left.equalToSuperview()
+//            $0.top.equalTo(backBtn.snp.bottom)
         }
         collection.register(cellWithClass: PCkLayoutTypeCell.self)
         
@@ -124,15 +124,25 @@ extension PCkLayoutPopView: UICollectionViewDataSource {
 
 extension PCkLayoutPopView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width: CGFloat = (UIScreen.main.bounds.width - 12 * 5 - 1) / 4
+        let width: CGFloat = 60 //(UIScreen.main.bounds.width - 12 * 5 - 1) / 4
+        let height: CGFloat = 60
         
-        return CGSize(width: width, height: width)
+        
+        return CGSize(width: width, height: height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let padding: CGFloat = 12
+        let width: CGFloat = 60
+        let count = CGFloat(PCpDataManager.default.layoutTypeList.count)
+        var left: CGFloat = UIScreen.main.bounds.width - (width * count) - (padding * count + 1)
+        if left > 0 {
+            left = padding + left/2
+        } else {
+            left = 12
+        }
         
-        return UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        return UIEdgeInsets(top: padding, left: left, bottom: padding, right: left)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

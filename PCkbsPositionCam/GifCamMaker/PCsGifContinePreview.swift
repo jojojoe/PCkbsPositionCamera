@@ -17,6 +17,8 @@ class PCsGifContinePreview: UIView {
     var previewPhotos: [UIImage] = []
     
     func closePreviewAction() {
+        previewPhotos = []
+        collection.reloadData()
         backBtnClickBlock?()
     }
     

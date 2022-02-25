@@ -39,12 +39,12 @@
 		EBA8938227C6335300AD7E63 /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = EBA8938127C6335300AD7E63 /* TestView.m */; };
 		EBA8938527C6338E00AD7E63 /* LivePhotoConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = EBA8938427C6338E00AD7E63 /* LivePhotoConverter.m */; };
 		EBCF724127BA524200F3E019 /* PCkSavePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCF724027BA524200F3E019 /* PCkSavePopView.swift */; };
+		EBDF153A27C7A03900A5AD54 /* PCsUserPhotoMakerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDF153927C7A03900A5AD54 /* PCsUserPhotoMakerVC.swift */; };
 		EBF4F15527BE3EA700402AFC /* PCsGifMakerCamVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */; };
 		EBF4F15727BF37CE00402AFC /* PCsGifConfigBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15627BF37CE00402AFC /* PCsGifConfigBar.swift */; };
 		EBF4F15927BF3B3A00402AFC /* sizeScale.json in Resources */ = {isa = PBXBuildFile; fileRef = EBF4F15827BF3B3A00402AFC /* sizeScale.json */; };
 		EBF4F15B27BF416A00402AFC /* PCsGifContinePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15A27BF416A00402AFC /* PCsGifContinePreview.swift */; };
 		EBF4F15F27BF8AC100402AFC /* PCsGifSaveConvertVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */; };
-		EBF4F16127BFA3E800402AFC /* PCsGifSaveAnimationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4F16027BFA3E800402AFC /* PCsGifSaveAnimationBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,12 +87,12 @@
 		EBA8938327C6338E00AD7E63 /* LivePhotoConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LivePhotoConverter.h; sourceTree = "<group>"; };
 		EBA8938427C6338E00AD7E63 /* LivePhotoConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LivePhotoConverter.m; sourceTree = "<group>"; };
 		EBCF724027BA524200F3E019 /* PCkSavePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCkSavePopView.swift; sourceTree = "<group>"; };
+		EBDF153927C7A03900A5AD54 /* PCsUserPhotoMakerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsUserPhotoMakerVC.swift; sourceTree = "<group>"; };
 		EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifMakerCamVC.swift; sourceTree = "<group>"; };
 		EBF4F15627BF37CE00402AFC /* PCsGifConfigBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifConfigBar.swift; sourceTree = "<group>"; };
 		EBF4F15827BF3B3A00402AFC /* sizeScale.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sizeScale.json; sourceTree = "<group>"; };
 		EBF4F15A27BF416A00402AFC /* PCsGifContinePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifContinePreview.swift; sourceTree = "<group>"; };
 		EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifSaveConvertVC.swift; sourceTree = "<group>"; };
-		EBF4F16027BFA3E800402AFC /* PCsGifSaveAnimationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCsGifSaveAnimationBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +145,8 @@
 		948FD17527B3932800D3156C /* PCkbsPositionCam */ = {
 			isa = PBXGroup;
 			children = (
-				EBA8938627C723E700AD7E63 /* GifEdit */,
+				EBDF153827C7A00900A5AD54 /* UserPhotoEdit */,
+				EBA8938627C723E700AD7E63 /* GifEditSave */,
 				EB3AE5FC27B39898007A896A /* ToolExtension */,
 				EBF4F15327BE3E7800402AFC /* GifCamMaker */,
 				EB3AE60927B3A5C2007A896A /* Camera */,
@@ -234,11 +235,21 @@
 			path = LivephotoPresenter;
 			sourceTree = "<group>";
 		};
-		EBA8938627C723E700AD7E63 /* GifEdit */ = {
+		EBA8938627C723E700AD7E63 /* GifEditSave */ = {
 			isa = PBXGroup;
 			children = (
+				EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */,
+				EBA8936E27C6152700AD7E63 /* LivephotoPresenter */,
 			);
-			path = GifEdit;
+			path = GifEditSave;
+			sourceTree = "<group>";
+		};
+		EBDF153827C7A00900A5AD54 /* UserPhotoEdit */ = {
+			isa = PBXGroup;
+			children = (
+				EBDF153927C7A03900A5AD54 /* PCsUserPhotoMakerVC.swift */,
+			);
+			path = UserPhotoEdit;
 			sourceTree = "<group>";
 		};
 		EBF4F15327BE3E7800402AFC /* GifCamMaker */ = {
@@ -247,9 +258,6 @@
 				EBF4F15427BE3EA700402AFC /* PCsGifMakerCamVC.swift */,
 				EBF4F15627BF37CE00402AFC /* PCsGifConfigBar.swift */,
 				EBF4F15A27BF416A00402AFC /* PCsGifContinePreview.swift */,
-				EBF4F15E27BF8AC100402AFC /* PCsGifSaveConvertVC.swift */,
-				EBF4F16027BFA3E800402AFC /* PCsGifSaveAnimationBar.swift */,
-				EBA8936E27C6152700AD7E63 /* LivephotoPresenter */,
 			);
 			path = GifCamMaker;
 			sourceTree = "<group>";
@@ -393,6 +401,7 @@
 				EB3AE60027B399A9007A896A /* PCkPurchaseM.swift in Sources */,
 				EBF4F15727BF37CE00402AFC /* PCsGifConfigBar.swift in Sources */,
 				EBF4F15527BE3EA700402AFC /* PCsGifMakerCamVC.swift in Sources */,
+				EBDF153A27C7A03900A5AD54 /* PCsUserPhotoMakerVC.swift in Sources */,
 				948FD17B27B3932800D3156C /* ViewController.swift in Sources */,
 				EBA0077C27B66E13003BA955 /* PCkOverlayerImgView.swift in Sources */,
 				EBA8938227C6335300AD7E63 /* TestView.m in Sources */,
@@ -402,7 +411,6 @@
 				EB3AE60627B3A24B007A896A /* PCkSettingVC.swift in Sources */,
 				EB3AE5FB27B39632007A896A /* PCpMainVC.swift in Sources */,
 				EB9AFAAC27BA011200ABAB6D /* PCkLayoutPopView.swift in Sources */,
-				EBF4F16127BFA3E800402AFC /* PCsGifSaveAnimationBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,7 +571,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xinyu.test.888888;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "PCkbsPositionCam/PCkbsPositionCam-Bridging-Header.h";

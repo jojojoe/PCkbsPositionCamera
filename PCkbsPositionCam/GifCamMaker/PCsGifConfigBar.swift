@@ -146,8 +146,8 @@ class PCsGifConfigBar: UIView {
         }
         
         //
-        countSlider.minimumValue = 0
-        countSlider.maximumValue = 1
+        countSlider.minimumValue = 3
+        countSlider.maximumValue = 20
         countSlider.value = 0.5
         countSlider.setThumbImage(UIImage(named: "sliderpoint"), for: .normal)
         countSlider.setMinimumTrackImage(UIImage(named: "sliderLeft"), for: .normal)

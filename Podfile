@@ -19,10 +19,10 @@ target 'PCkbsPositionCam' do
   pod 'ShimmerSwift'
   pod 'AppsFlyerFramework'
   pod 'SRCountdownTimer'
-  
+  pod 'YPImagePicker'
   pod 'Gifer'
   pod 'SDWebImage', '~> 5.0'
   
-#  pod 'LookinServer', :configurations => ['Debug']
+  pod 'LookinServer', :configurations => ['Debug']
   
 end
